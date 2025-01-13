@@ -7,49 +7,52 @@
  * @return {Object[]}
  */
 function transformStateWithClones(state, actions) {
-  const stateClone = { ...state };
+  let stateClone = { ...state };
   const states = [];
 
   for (const action of actions) {
     switch (action.type) {
       case 'addProperties':
-        addProperties(stateClone, action.extraData);
+        stateClone = addProperties(stateClone, action.extraData);
         break;
 
       case 'removeProperties':
-        removeProperties(stateClone, action.keysToRemove);
+        stateClone = removeProperties(stateClone, action.keysToRemove);
         break;
 
       case 'clear':
-        clearProperties(stateClone);
+        stateClone = clearProperties(stateClone);
         break;
 
-      default: console.log('Unexpected type');
+      default:
+        console.log('Unexpected type');
     }
 
-    addStateToStates(states, stateClone);
+    states.push({ ...stateClone });
   }
 
   function addProperties(stateClone, extraData) {
+    const newState = { ...stateClone };
+
     for (const key in extraData) {
-      stateClone[key] = extraData[key];
+      newState[key] = extraData[key];
     }
+
+    return newState;
   }
 
   function removeProperties(stateClone, keysToRemove) {
+    const newState = { ...stateClone };
+
     for (const key of keysToRemove) {
-      delete stateClone[key];
+      delete newState[key];
     }
+
+    return newState;
   }
 
   function clearProperties(stateClone) {
-    for (const key in stateClone) {
-      delete stateClone[key];
-    }
-  }
-
-  function addStateToStates(states, stateClone) {
-    states.push({ ...stateClone });
+    return {};
   }
 
   return states;
