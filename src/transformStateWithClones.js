@@ -22,6 +22,9 @@ function transformStateWithClones(state, actions) {
 
       case 'clear':
         clearProperties(stateClone);
+        break;
+
+      default: console.log('Unexpected type');
     }
 
     addStateToStates(states, stateClone);
